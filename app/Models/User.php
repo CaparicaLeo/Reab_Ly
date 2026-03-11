@@ -6,13 +6,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @mixin \Laravel\Sanctum\HasApiTokens
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUuids;
+    use HasFactory, Notifiable, HasUuids, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -50,7 +55,22 @@ class User extends Authenticatable
         ];
     }
 
-    public function role(){
-        return $this->hasOne(Doctor::class) ?? $this->hasOne(Patient::class);
+    public function doctor(): HasOne
+    {
+        return $this->hasOne(Doctor::class);
+    }
+
+    public function patient(): HasOne
+    {
+        return $this->hasOne(Patient::class);
+    }
+
+    public function profile(): Doctor|Patient|null
+    {
+        return match($this->role) {
+            'doctor'  => $this->doctor,
+            'patient' => $this->patient,
+            default   => null,
+        };
     }
 }

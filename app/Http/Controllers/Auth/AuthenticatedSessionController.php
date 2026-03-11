@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -16,16 +18,24 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $token = $request->user()->createToken('auth_token')->plainTextToken;
+        $user = Auth::guard('web')->user();
+
+        Log::info('User after authenticate:', ['user' => $user]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        Log::info('Token created:', ['token' => $token]);
 
         return response()->json(['token' => $token]);
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
     public function destroy(Request $request): JsonResponse
     {
+        Log::info('Destroy called', [
+            'user' => $request->user() ? $request->user()->toArray() : null,
+            'token' => $request->bearerToken(),
+        ]);
+
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logout realizado com sucesso.']);

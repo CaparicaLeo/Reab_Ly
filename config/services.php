@@ -34,5 +34,10 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'external_api'=> [
+        'cep' => [
+            'base_url' => env('CEP_API_URL'),
+        ]
+    ]
 
 ];
