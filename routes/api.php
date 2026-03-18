@@ -10,5 +10,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', fn(Request $request) => $request->user());
     Route::apiResource('addresses', AddressController::class)->except(['index']);
+    Route::apiResource('treatments', \App\Http\Controllers\TreatmentController::class);
 });
+
 require __DIR__ . '/auth.php';
