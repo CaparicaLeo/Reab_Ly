@@ -29,7 +29,6 @@ class User extends Authenticatable
         'email',
         'password',
         'phone_number',
-        'role'
     ];
 
     /**
@@ -67,10 +66,6 @@ class User extends Authenticatable
 
     public function profile(): Doctor|Patient|null
     {
-        return match($this->role) {
-            'doctor'  => $this->doctor,
-            'patient' => $this->patient,
-            default   => null,
-        };
+        return $this->doctor ?? $this->patient;
     }
 }
