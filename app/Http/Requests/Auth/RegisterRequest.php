@@ -20,7 +20,6 @@ class RegisterRequest extends FormRequest
             'email'              => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
             'password'           => ['required', 'confirmed', Rules\Password::defaults()],
             'phone_number'       => ['nullable', 'string', 'max:20'],
-            'role'               => ['required', Rule::in(['admin', 'patient', 'doctor'])],
             'crefito'            => ['sometimes', Rule::requiredIf($this->role === 'doctor'), 'string', 'max:255'],
             'specialty'          => ['sometimes', Rule::requiredIf($this->role === 'doctor'), 'string', 'max:255'],
             'birth_date'         => ['sometimes', Rule::requiredIf($this->role === 'patient'), 'date'],
