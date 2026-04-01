@@ -13,6 +13,7 @@ class TreatmentItem extends Model
 
     protected $fillable = [
         'treatment_id',
+        'exercise_id',
         'sets',
         'repetitions',
         'duration_seconds',
@@ -26,5 +27,9 @@ class TreatmentItem extends Model
     public function treatment()
     {
         return $this->belongsTo(Treatment::class);
+    }
+    public function exercise()
+    {
+        return $this->belongsTo(Exercise::class);
     }
 }
