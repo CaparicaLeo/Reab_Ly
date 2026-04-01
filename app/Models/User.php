@@ -68,4 +68,8 @@ class User extends Authenticatable
     {
         return $this->doctor ?? $this->patient;
     }
+    public function sessionFeedbacks()
+    {
+        return $this->hasMany(SessionFeedback::class, 'patient_id');
+    }
 }
