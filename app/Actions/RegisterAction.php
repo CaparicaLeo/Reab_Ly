@@ -14,7 +14,6 @@ class RegisterAction
             'email'        => $data['email'],
             'password'     => Hash::make($data['password']),
             'phone_number' => $data['phone_number'] ?? null,
-            'role'         => $data['role'],
         ]);
 
         $this->createProfile($user, $data);
@@ -24,7 +23,9 @@ class RegisterAction
 
     private function createProfile(User $user, array $data): void
     {
-        match ($user->role) {
+        $role = $data['role'] ?? null;
+        
+        match ($role) {
             'doctor' => $this->createDoctor($user, $data),
             'patient' => $this->createPatient($user, $data),
             default => null,
@@ -33,10 +34,15 @@ class RegisterAction
 
     private function createDoctor(User $user, array $data): void
     {
-        $user->doctor()->create([
-            'crefito' => $data['crefito'],
-            'specialty' => $data['specialty'],
-        ]);
+        try {
+            $user->doctor()->create([
+                'crefito' => $data['crefito'] ?? null,
+                'specialty' => $data['specialty'] ?? null,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error creating doctor: ' . $e->getMessage());
+            throw $e;
+        }
     }
     private function createPatient(User $user, array $data): void
     {
