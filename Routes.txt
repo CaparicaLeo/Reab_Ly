@@ -1,0 +1,35 @@
+
+  GET|HEAD        / ........................................................................................................... 
+  POST            api/addresses ..................................................... addresses.store › AddressController@store
+  GET|HEAD        api/addresses/{address} ............................................. addresses.show › AddressController@show
+  PUT|PATCH       api/addresses/{address} ......................................... addresses.update › AddressController@update
+  DELETE          api/addresses/{address} ....................................... addresses.destroy › AddressController@destroy
+  POST            api/email/verification-notification .. verification.send › Auth\EmailVerificationNotificationController@store
+  POST            api/forgot-password ................................. password.email › Auth\PasswordResetLinkController@store
+  GET|HEAD        api/items/{item} .................................................. items.show › TreatmentItemController@show
+  PUT|PATCH       api/items/{item} .............................................. items.update › TreatmentItemController@update
+  DELETE          api/items/{item} ............................................ items.destroy › TreatmentItemController@destroy
+  POST            api/login ................................................. login › Auth\AuthenticatedSessionController@store
+  POST            api/logout ............................................. logout › Auth\AuthenticatedSessionController@destroy
+  POST            api/register ................................................. register › Auth\RegisteredUserController@store
+  POST            api/reset-password ........................................ password.store › Auth\NewPasswordController@store
+  POST            api/treatment-items ................................... treatment-items.store › TreatmentItemController@store
+  GET|HEAD        api/treatment-items/{treatment_item} .................... treatment-items.show › TreatmentItemController@show
+  PUT|PATCH       api/treatment-items/{treatment_item} ................ treatment-items.update › TreatmentItemController@update
+  DELETE          api/treatment-items/{treatment_item} .............. treatment-items.destroy › TreatmentItemController@destroy
+  GET|HEAD        api/treatments ................................................. treatments.index › TreatmentController@index
+  POST            api/treatments ................................................. treatments.store › TreatmentController@store
+  GET|HEAD        api/treatments/{treatment} ....................................... treatments.show › TreatmentController@show
+  PUT|PATCH       api/treatments/{treatment} ................................... treatments.update › TreatmentController@update
+  DELETE          api/treatments/{treatment} ................................. treatments.destroy › TreatmentController@destroy
+  GET|HEAD        api/treatments/{treatment}/items ..................... treatments.items.index › TreatmentItemController@index
+  POST            api/treatments/{treatment}/items ..................... treatments.items.store › TreatmentItemController@store
+  GET|HEAD        api/user .................................................................................................... 
+  GET|HEAD        api/verify-email/{id}/{hash} ............................... verification.verify › Auth\VerifyEmailController
+  GET|HEAD        sanctum/csrf-cookie ....................... sanctum.csrf-cookie › Laravel\Sanctum › CsrfCookieController@show
+  GET|HEAD        storage/{path} ................................................................................ storage.local
+  PUT             storage/{path} ......................................................................... storage.local.upload
+  GET|HEAD        up .......................................................................................................... 
+
+                                                                                                            Showing [31] routes
+

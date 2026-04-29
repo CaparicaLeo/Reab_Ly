@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->shallow();
     Route::apiResource('treatment-items', \App\Http\Controllers\TreatmentItemController::class)
         ->only(['show', 'update', 'destroy', 'store']);
+    Route::apiResource('patients', \App\Http\Controllers\PatientController::class);
 });
 
 require __DIR__ . '/auth.php';

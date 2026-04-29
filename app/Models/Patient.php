@@ -12,11 +12,16 @@ class Patient extends Model
     
     protected $fillable = [
         'birth_date',
-        'clinical_condition'
+        'clinical_condition',
+        'doctor_id'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class);
     }
 }
