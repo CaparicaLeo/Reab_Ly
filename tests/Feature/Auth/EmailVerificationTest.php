@@ -20,7 +20,8 @@ test('email can be verified', function () {
 
     Event::assertDispatched(Verified::class);
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
-    $response->assertRedirect(config('app.frontend_url').'/dashboard?verified=1');
+    $response->assertOk()
+        ->assertJson(['message' => 'email-verified']);
 });
 
 test('email is not verified with invalid hash', function () {

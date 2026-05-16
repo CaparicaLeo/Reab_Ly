@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->shallow();
     Route::apiResource('treatment-items', \App\Http\Controllers\TreatmentItemController::class)
         ->only(['show', 'update', 'destroy', 'store']);
+    Route::apiResource('exercises', \App\Http\Controllers\ExerciseController::class);
     Route::apiResource('patients', \App\Http\Controllers\PatientController::class);
     Route::get('patients/{patient}/treatments', [\App\Http\Controllers\PatientController::class, 'treatments']);
 });

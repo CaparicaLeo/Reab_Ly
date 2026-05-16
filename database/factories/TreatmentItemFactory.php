@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Exercise;
 use App\Models\Treatment;
 
 /**
@@ -19,6 +20,7 @@ class TreatmentItemFactory extends Factory
     {
         return [
             'treatment_id' => Treatment::factory(),
+            'exercise_id'  => Exercise::factory(),
             'sets'              => $this->faker->optional()->numberBetween(1, 10),
             'repetitions'       => $this->faker->optional()->numberBetween(1, 30),
             'duration_seconds'  => $this->faker->optional()->numberBetween(1, 300),

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Illuminate\Http\JsonResponse;
 
 class VerifyEmailController extends Controller
 {
@@ -22,6 +22,6 @@ class VerifyEmailController extends Controller
             event(new Verified($request->user()));
         }
 
-        return request()->json(['message' => 'email-verified']);
+        return response()->json(['message' => 'email-verified']);
     }
 }
