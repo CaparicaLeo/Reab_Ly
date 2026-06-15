@@ -22,10 +22,16 @@ class ExerciseController extends Controller
         $patient = $request->user()->patient()->first();
 
         $perPage = min((int) $request->query('per_page', 30), 100);
-        $exercises = Exercise::fromTreatments(
-            $doctor?->id,
-            $patient?->id
-        )->orderBy('created_at', 'desc')->paginate($perPage);
+
+        if ($doctor) {
+            $exercises = Exercise::orderBy('created_at', 'desc')->paginate($perPage);
+        } elseif ($patient) {
+            $exercises = Exercise::fromTreatments(null, $patient->id)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+        } else {
+            return response()->json(['message' => 'Acesso negado.'], 403);
+        }
 
         return ExerciseResource::collection($exercises);
     }

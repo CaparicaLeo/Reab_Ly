@@ -81,6 +81,7 @@ class PatientController extends Controller
 
             \Log::info('Patient created:', ['patient_id' => $patient->id]);
 
+            $patient->load('user');
             return response()->json($patient, 201);
         } catch (\Exception $e) {
             \Log::error('Erro ao criar paciente: ' . $e->getMessage());
@@ -146,6 +147,7 @@ class PatientController extends Controller
         ]);
 
         $patient->update($validated);
+        $patient->load('user');
 
         return response()->json($patient);
     }

@@ -22,6 +22,7 @@ class UpdateTreatmentItemRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'exercise_id' => 'sometimes|uuid|exists:exercises,id',
             'sets' => 'nullable|integer|min:1',
             'repetitions' => 'nullable|integer|min:1',
             'duration_seconds' => 'nullable|integer|min:1',

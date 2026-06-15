@@ -8,7 +8,7 @@ use App\Http\Controllers\ReportController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', fn(Request $request) => $request->user()->load('doctor', 'patient'));
-    Route::apiResource('addresses', AddressController::class)->except(['index']);
+    Route::apiResource('addresses', AddressController::class);
     Route::apiResource('treatments', \App\Http\Controllers\TreatmentController::class);
     Route::apiResource('treatments.items', \App\Http\Controllers\TreatmentItemController::class)
         ->shallow();

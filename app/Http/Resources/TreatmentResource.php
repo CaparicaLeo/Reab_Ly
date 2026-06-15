@@ -23,6 +23,20 @@ class TreatmentResource extends JsonResource
             'doctor_id'  => $this->doctor_id,
             'patient_id' => $this->patient_id,
             'created_at' => $this->created_at,
+            'items' => $this->whenLoaded('items', fn() =>
+                $this->items->map(fn($item) => [
+                    'id' => $item->id,
+                    'sets' => $item->sets,
+                    'repetitions' => $item->repetitions,
+                    'duration_seconds' => $item->duration_seconds,
+                    'frequency_text' => $item->frequency_text,
+                    'exercise' => $item->relationLoaded('exercise') && $item->exercise ? [
+                        'id' => $item->exercise->id,
+                        'title' => $item->exercise->title,
+                        'category' => $item->exercise->category,
+                    ] : null,
+                ])
+            ),
         ];
     }
 }

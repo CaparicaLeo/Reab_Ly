@@ -18,6 +18,9 @@ class Treatment extends Model
         'end_date',
         'status',
     ];
+    protected $attributes = [
+        'status' => 'ongoing',
+    ];
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',

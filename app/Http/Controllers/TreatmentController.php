@@ -55,7 +55,10 @@ class TreatmentController extends Controller
     {
         $this->authorize('create', Treatment::class);
 
-        $treatment = Treatment::create($request->validated());
+        $data = $request->validated();
+        $data['doctor_id'] = $request->user()->doctor->id;
+
+        $treatment = Treatment::create($data);
 
         return (new TreatmentResource($treatment))->response()->setStatusCode(201);
     }

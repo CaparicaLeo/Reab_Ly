@@ -22,7 +22,8 @@ class StoreTreatmentItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'treatment_id' => 'required|exists:treatments,id',
+            'treatment_id' => 'sometimes|exists:treatments,id',
+            'exercise_id' => 'required|uuid|exists:exercises,id',
             'sets' => 'nullable|integer|min:1',
             'repetitions' => 'nullable|integer|min:1',
             'duration_seconds' => 'nullable|integer|min:1',
@@ -32,7 +33,8 @@ class StoreTreatmentItemRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'treatment_id.required' => 'The treatment ID is required.',
+            'exercise_id.required' => 'The exercise field is required.',
+            'exercise_id.exists' => 'The selected exercise does not exist.',
             'treatment_id.exists' => 'The specified treatment ID does not exist.',
             'sets.integer' => 'Sets must be an integer.',
             'sets.min' => 'Sets must be at least 1.',
