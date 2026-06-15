@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'consent' => \App\Http\Middleware\CheckLgpdConsent::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
