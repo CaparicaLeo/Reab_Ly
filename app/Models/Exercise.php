@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Exercise extends Model
 {
@@ -16,6 +17,15 @@ class Exercise extends Model
         'category',
         'video_url',
     ];
+
+    protected static function booted(): void
+    {
+        static::deleted(function (Exercise $exercise) {
+            if ($exercise->video_url && Storage::disk('s3')->exists($exercise->video_url)) {
+                Storage::disk('s3')->delete($exercise->video_url);
+            }
+        });
+    }
 
     public function treatmentItems()
     {

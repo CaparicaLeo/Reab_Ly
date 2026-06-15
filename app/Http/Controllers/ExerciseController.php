@@ -8,6 +8,7 @@ use App\Http\Resources\ExerciseResource;
 use App\Models\Exercise;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ExerciseController extends Controller
 {
@@ -32,7 +33,14 @@ class ExerciseController extends Controller
     {
         $this->authorize('create', Exercise::class);
 
-        $exercise = Exercise::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('video')) {
+            $path = $request->file('video')->store('exercises', 's3');
+            $data['video_url'] = Storage::disk('s3')->url($path);
+        }
+
+        $exercise = Exercise::create($data);
 
         return (new ExerciseResource($exercise))->response()->setStatusCode(201);
     }
@@ -48,7 +56,17 @@ class ExerciseController extends Controller
     {
         $this->authorize('update', $exercise);
 
-        $exercise->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('video')) {
+            if ($exercise->video_url && Storage::disk('s3')->exists($exercise->video_url)) {
+                Storage::disk('s3')->delete($exercise->video_url);
+            }
+            $path = $request->file('video')->store('exercises', 's3');
+            $data['video_url'] = Storage::disk('s3')->url($path);
+        }
+
+        $exercise->update($data);
 
         return (new ExerciseResource($exercise))->response();
     }

@@ -18,20 +18,24 @@ class StoreRequest extends FormRequest
             'description' => 'nullable|string',
             'category'    => 'nullable|string|max:255',
             'video_url'   => 'nullable|string|max:255',
+            'video'       => 'nullable|file|mimes:mp4,mov,avi,webm,mkv|max:204800',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'title.required'       => 'The title field is required.',
-            'title.string'         => 'The title must be a string.',
-            'title.max'            => 'The title may not be greater than 255 characters.',
-            'description.string'   => 'The description must be a string.',
-            'category.string'      => 'The category must be a string.',
-            'category.max'         => 'The category may not be greater than 255 characters.',
-            'video_url.string'     => 'The video URL must be a string.',
-            'video_url.max'        => 'The video URL may not be greater than 255 characters.',
+            'title.required'       => 'O título é obrigatório.',
+            'title.string'         => 'O título deve ser um texto.',
+            'title.max'            => 'O título não pode ter mais de 255 caracteres.',
+            'description.string'   => 'A descrição deve ser um texto.',
+            'category.string'      => 'A categoria deve ser um texto.',
+            'category.max'         => 'A categoria não pode ter mais de 255 caracteres.',
+            'video_url.string'     => 'A URL do vídeo deve ser um texto.',
+            'video_url.max'        => 'A URL do vídeo não pode ter mais de 255 caracteres.',
+            'video.file'           => 'O vídeo deve ser um arquivo.',
+            'video.mimes'          => 'O vídeo deve ser do tipo: mp4, mov, avi, webm ou mkv.',
+            'video.max'            => 'O vídeo não pode ter mais de 200MB.',
         ];
     }
 }
