@@ -21,10 +21,11 @@ class ExerciseController extends Controller
         $doctor  = $request->user()->doctor()->first();
         $patient = $request->user()->patient()->first();
 
+        $perPage = min((int) $request->query('per_page', 30), 100);
         $exercises = Exercise::fromTreatments(
             $doctor?->id,
             $patient?->id
-        )->get();
+        )->orderBy('created_at', 'desc')->paginate($perPage);
 
         return ExerciseResource::collection($exercises);
     }

@@ -44,9 +44,10 @@ class DiarySessionController extends Controller
             $query->where('session_date', '<=', $request->query('end_date'));
         }
 
+        $perPage = min((int) $request->query('per_page', 30), 100);
         $sessions = $query->orderBy('session_date', 'desc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate($perPage);
 
         return response()->json($sessions);
     }

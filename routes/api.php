@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -17,6 +18,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('patients', \App\Http\Controllers\PatientController::class);
     Route::get('patients/{patient}/treatments', [\App\Http\Controllers\PatientController::class, 'treatments']);
     Route::get('patients/{patient}/report', [\App\Http\Controllers\ReportController::class, 'generate']);
+    Route::patch('patients/{patient}/toggle-active', [\App\Http\Controllers\PatientController::class, 'toggleActive']);
+
+    Route::get('/dashboard/alerts', [DashboardController::class, 'alerts']);
 
     Route::get('/consent', [\App\Http\Controllers\ConsentController::class, 'show']);
     Route::post('/consent', [\App\Http\Controllers\ConsentController::class, 'store']);

@@ -23,17 +23,33 @@ class PatientController extends Controller
             return response()->json(['message' => 'Acesso negado. Apenas médicos podem acessar.'], 403);
         }
 
-        $patients = Patient::where('doctor_id', $doctor->id)
-            ->with('user')
-            ->get()
-            ->map(function ($patient) {
-                $patient->email = $patient->user?->email;
-                $patient->phone_number = $patient->user?->phone_number;
-                return $patient;
-            });
+        $query = Patient::where('doctor_id', $doctor->id)->with('user');
+
+        if ($request->has('search')) {
+            $search = $request->query('search');
+            $query->whereHas('user', fn($q) => $q->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"));
+        }
+
+        if ($request->has('active')) {
+            $query->where('active', $request->boolean('active'));
+        }
+
+        if ($request->has('clinical_condition')) {
+            $query->where('clinical_condition', 'like', '%' . $request->query('clinical_condition') . '%');
+        }
+
+        $perPage = min((int) $request->query('per_page', 15), 100);
+        $patients = $query->orderBy('created_at', 'desc')->paginate($perPage);
+
+        $patients->getCollection()->transform(function ($patient) {
+            $patient->email = $patient->user?->email;
+            $patient->phone_number = $patient->user?->phone_number;
+            return $patient;
+        });
 
         return response()->json($patients);
     }
+
     public function store(StorePatientRequest $request)
     {
         $doctor = $request->user()->doctor;
@@ -44,25 +60,25 @@ class PatientController extends Controller
 
         try {
             $validated = $request->validated();
-            
+
             \Log::info('Creating patient with data:', $validated);
-            
+
             $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => bcrypt($validated['password']),
                 'phone_number' => $validated['phone_number'] ?? '(00) 00000-0000',
             ]);
-            
+
             \Log::info('User created:', ['user_id' => $user->id]);
-            
+
             $patient = Patient::create([
                 'user_id'            => $user->id,
                 'doctor_id'          => $doctor->id,
                 'birth_date'         => $validated['birth_date'],
                 'clinical_condition' => $validated['clinical_condition'] ?? null,
             ]);
-            
+
             \Log::info('Patient created:', ['patient_id' => $patient->id]);
 
             return response()->json($patient, 201);
@@ -76,19 +92,20 @@ class PatientController extends Controller
     {
         try {
             $doctor = request()->user()->doctor;
-            
+
             if (!$doctor || $patient->doctor_id !== $doctor->id) {
                 return response()->json(['message' => 'Acesso negado'], 403);
             }
 
             $patient->load('user', 'treatments');
-            
+
             return response()->json([
                 'id' => $patient->id,
                 'user_id' => $patient->user_id,
                 'doctor_id' => $patient->doctor_id,
                 'birth_date' => $patient->birth_date,
                 'clinical_condition' => $patient->clinical_condition,
+                'active' => $patient->active,
                 'email' => $patient->user?->email,
                 'phone_number' => $patient->user?->phone_number,
                 'user' => $patient->user,
@@ -103,7 +120,7 @@ class PatientController extends Controller
     public function treatments(Patient $patient)
     {
         $doctor = request()->user()->doctor;
-        
+
         if (!$doctor || $patient->doctor_id !== $doctor->id) {
             return response()->json(['message' => 'Acesso negado'], 403);
         }
@@ -118,7 +135,7 @@ class PatientController extends Controller
     public function update(UpdatePatientRequest $request, Patient $patient)
     {
         $doctor = request()->user()->doctor;
-        
+
         if (!$doctor || $patient->doctor_id !== $doctor->id) {
             return response()->json(['message' => 'Acesso negado'], 403);
         }
@@ -133,10 +150,26 @@ class PatientController extends Controller
         return response()->json($patient);
     }
 
+    public function toggleActive(Patient $patient)
+    {
+        $doctor = request()->user()->doctor;
+
+        if (!$doctor || $patient->doctor_id !== $doctor->id) {
+            return response()->json(['message' => 'Acesso negado'], 403);
+        }
+
+        $patient->update(['active' => !$patient->active]);
+
+        return response()->json([
+            'message' => $patient->active ? 'Paciente ativado.' : 'Paciente inativado.',
+            'active' => $patient->active,
+        ]);
+    }
+
     public function destroy(Patient $patient)
     {
         $doctor = request()->user()->doctor;
-        
+
         if (!$doctor || $patient->doctor_id !== $doctor->id) {
             return response()->json(['message' => 'Acesso negado'], 403);
         }
