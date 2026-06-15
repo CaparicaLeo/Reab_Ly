@@ -12,23 +12,45 @@ use Illuminate\Http\Request;
 class TreatmentController extends Controller
 {
     use AuthorizesRequests;
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request)
     {
         $this->authorize('viewAny', Treatment::class);
 
         $doctor = $request->user()->doctor;
 
-        $treatments = Treatment::where('doctor_id', $doctor->id)->get();
+        $query = Treatment::where('doctor_id', $doctor->id)->with('patient.user');
+
+        if ($request->has('status')) {
+            $query->where('status', $request->query('status'));
+        }
+
+        if ($request->has('patient_id')) {
+            $query->where('patient_id', $request->query('patient_id'));
+        }
+
+        if ($request->has('search')) {
+            $search = $request->query('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhereHas('patient.user', fn($u) => $u->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        if ($request->has('start_date')) {
+            $query->where('start_date', '>=', $request->query('start_date'));
+        }
+
+        if ($request->has('end_date')) {
+            $query->where('end_date', '<=', $request->query('end_date'));
+        }
+
+        $perPage = min((int) $request->query('per_page', 15), 100);
+        $treatments = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
         return TreatmentResource::collection($treatments);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(CreateRequest $request)
     {
         $this->authorize('create', Treatment::class);
@@ -38,9 +60,6 @@ class TreatmentController extends Controller
         return (new TreatmentResource($treatment))->response()->setStatusCode(201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Treatment $treatment)
     {
         $this->authorize('view', $treatment);
@@ -48,9 +67,6 @@ class TreatmentController extends Controller
         return (new TreatmentResource($treatment))->response();
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateRequest $request, Treatment $treatment)
     {
         $this->authorize('update', $treatment);
@@ -60,9 +76,6 @@ class TreatmentController extends Controller
         return (new TreatmentResource($treatment))->response();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Treatment $treatment)
     {
         $this->authorize('delete', $treatment);

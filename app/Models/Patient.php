@@ -19,6 +19,7 @@ class Patient extends Model
         'doctor_id',
         'consentimento_lgpd',
         'consentimento_em',
+        'active',
     ];
 
     protected function casts(): array
@@ -26,6 +27,7 @@ class Patient extends Model
         return [
             'consentimento_lgpd' => 'boolean',
             'consentimento_em' => 'datetime',
+            'active' => 'boolean',
         ];
     }
 
@@ -40,5 +42,10 @@ class Patient extends Model
     public function treatments(): HasMany
     {
         return $this->hasMany(Treatment::class, 'patient_id');
+    }
+
+    public function diarySessions(): HasMany
+    {
+        return $this->hasMany(DiarySession::class, 'patient_id');
     }
 }
