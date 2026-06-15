@@ -179,4 +179,20 @@ class PatientController extends Controller
         $patient->delete();
         return response()->json(null, 204);
     }
+
+    public function destroySelf(Request $request)
+    {
+        $user = $request->user();
+        $patient = $user->patient;
+
+        if (!$patient) {
+            return response()->json(['message' => 'Apenas pacientes podem excluir a própria conta.'], 403);
+        }
+
+        $patient->delete();
+        $user->tokens()->delete();
+        $user->delete();
+
+        return response()->json(['message' => 'Conta excluída com sucesso.']);
+    }
 }

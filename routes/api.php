@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/consent', [\App\Http\Controllers\ConsentController::class, 'show']);
     Route::post('/consent', [\App\Http\Controllers\ConsentController::class, 'store']);
+    Route::delete('/my/account', [\App\Http\Controllers\PatientController::class, 'destroySelf']);
 
     Route::middleware('consent')->group(function () {
         Route::get('/diary/stats', [\App\Http\Controllers\DiarySessionController::class, 'stats']);
