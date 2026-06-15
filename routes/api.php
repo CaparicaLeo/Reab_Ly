@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('patients/{patient}/toggle-active', [\App\Http\Controllers\PatientController::class, 'toggleActive']);
 
     Route::get('/dashboard/alerts', [DashboardController::class, 'alerts']);
+    Route::get('/my/treatments', [\App\Http\Controllers\TreatmentController::class, 'myTreatments']);
 
     Route::get('/consent', [\App\Http\Controllers\ConsentController::class, 'show']);
     Route::post('/consent', [\App\Http\Controllers\ConsentController::class, 'store']);

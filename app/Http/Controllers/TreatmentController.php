@@ -84,4 +84,20 @@ class TreatmentController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function myTreatments(Request $request)
+    {
+        $patient = $request->user()->patient;
+
+        if (!$patient) {
+            return response()->json(['message' => 'Acesso negado.'], 403);
+        }
+
+        $treatments = Treatment::where('patient_id', $patient->id)
+            ->with('items.exercise')
+            ->orderBy('start_date', 'desc')
+            ->get();
+
+        return TreatmentResource::collection($treatments);
+    }
 }
