@@ -16,10 +16,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('patients', \App\Http\Controllers\PatientController::class);
     Route::get('patients/{patient}/treatments', [\App\Http\Controllers\PatientController::class, 'treatments']);
 
-    Route::get('/diary/stats', [\App\Http\Controllers\DiarySessionController::class, 'stats']);
-    Route::apiResource('diary', \App\Http\Controllers\DiarySessionController::class)
-        ->parameters(['diary' => 'diarySession'])
-        ->only(['index', 'store', 'show']);
+    Route::get('/consent', [\App\Http\Controllers\ConsentController::class, 'show']);
+    Route::post('/consent', [\App\Http\Controllers\ConsentController::class, 'store']);
+
+    Route::middleware('consent')->group(function () {
+        Route::get('/diary/stats', [\App\Http\Controllers\DiarySessionController::class, 'stats']);
+        Route::apiResource('diary', \App\Http\Controllers\DiarySessionController::class)
+            ->parameters(['diary' => 'diarySession'])
+            ->only(['index', 'store', 'show']);
+    });
 });
 
 require __DIR__ . '/auth.php';
