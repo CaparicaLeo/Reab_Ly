@@ -15,6 +15,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('exercises', \App\Http\Controllers\ExerciseController::class);
     Route::apiResource('patients', \App\Http\Controllers\PatientController::class);
     Route::get('patients/{patient}/treatments', [\App\Http\Controllers\PatientController::class, 'treatments']);
+
+    Route::get('/diary/stats', [\App\Http\Controllers\DiarySessionController::class, 'stats']);
+    Route::apiResource('diary', \App\Http\Controllers\DiarySessionController::class)
+        ->parameters(['diary' => 'diarySession'])
+        ->only(['index', 'store', 'show']);
 });
 
 require __DIR__ . '/auth.php';
